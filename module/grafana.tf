@@ -3,7 +3,13 @@ resource "helm_release" "grafana" {
   repository       = "https://grafana.github.io/helm-charts"
   chart            = "grafana"
   namespace        = "default"
+
+  wait    = false
+  timeout = 1800
+
   replace    = true
+  cleanup_on_fail   = true
+  dependency_update = true
   create_namespace = false
 
   values = [<<EOF
