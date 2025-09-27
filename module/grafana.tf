@@ -1,11 +1,9 @@
-
-
-
 resource "helm_release" "grafana" {
-  name       = "grafana"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "grafana"
-  namespace  = "monitoring"
+  name             = "grafana"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "grafana"
+  namespace        = "monitoring"
+  create_namespace = true
 
   values = [<<EOF
 adminUser: admin
@@ -20,13 +18,12 @@ EOF
 }
 
 resource "grafana_data_source" "prometheus" {
-  depends_on = [helm_release.grafana]
-
-  name       = "Prometheus"
-  type       = "prometheus"
-  url        = "http://prometheus-server.monitoring.svc.cluster.local"
-  access     = "proxy"
-  is_default = true
+  depends_on  = [helm_release.grafana]
+  name        = "Prometheus"
+  type        = "prometheus"
+  url         = "http://prometheus-server.monitoring.svc.cluster.local"
+  access_mode = "proxy"     # <- chave correta
+  is_default  = true        # deixa como default
 }
 
 data "http" "node_dash" {
