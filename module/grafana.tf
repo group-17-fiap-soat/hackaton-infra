@@ -12,7 +12,9 @@ persistence:
   enabled: true
   size: 5Gi
 service:
-  type: ClusterIP
+  type: LoadBalancer
+rbac:
+  create: false
 EOF
   ]
 }
