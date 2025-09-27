@@ -2,19 +2,23 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "grafana" {
-  url  = "http://grafana.monitoring.svc.cluster.local"
-  auth = "admin:admin"
-}
-
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.cluster.token
   }
+}
+
+provider "grafana" {
+  url  = "http://grafana.monitoring.svc.cluster.local"
+  auth = "admin:admin"
 }
 
 terraform {
@@ -23,14 +27,13 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">=2.9.0"
-    }
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = ">=2.24.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">=2.9.0"
     }
     grafana = {
       source  = "grafana/grafana"
@@ -45,3 +48,10 @@ terraform {
   required_version = ">= 1.5"
 }
 
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
