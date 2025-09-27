@@ -10,3 +10,9 @@ variable "s3_bucket_name" {}
 variable "sonar_ami_id" {}
 variable "sonar_instance_type" {}
 variable "sonar_key_name" {}
+variable "db_name" {}
+variable "db_user" {}
+variable "db_password" {}
+variable "db_port" {
+  default = "5432"
+}
