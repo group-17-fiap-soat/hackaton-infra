@@ -1,8 +1,9 @@
 resource "helm_release" "grafana" {
-  name             = "grafana"
+  name             = "grafana-monitoring"
   repository       = "https://grafana.github.io/helm-charts"
   chart            = "grafana"
   namespace        = "default"
+  replace    = true
   create_namespace = false
 
   values = [<<EOF
