@@ -56,3 +56,11 @@ output "sonar_endpoint" {
   value       = aws_instance.sonar.public_ip
 }
 
+data "aws_msk_bootstrap_brokers" "bb" {
+  cluster_arn = aws_msk_cluster.kafka.arn
+}
+
+output "kafka_bootstrap_brokers_plaintext" {
+  value = data.aws_msk_bootstrap_brokers.bb.bootstrap_brokers
+}
+
