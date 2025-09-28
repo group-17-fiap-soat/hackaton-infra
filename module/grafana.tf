@@ -5,7 +5,7 @@ resource "kubernetes_config_map" "prometheus_config" {
   }
 
   data = {
-    "prometheus.yml" = file("${path.module}/../grafana/prometheus.yml")
+    "prometheus.yml" = file("${path.module}/../configs/prometheus.yml")
   }
 }
 
@@ -34,9 +34,8 @@ resource "kubernetes_deployment" "prometheus" {
         labels = {
           app = "prometheus"
         }
-        # força rollout quando o arquivo mudar
         annotations = {
-          checksum_config = filesha256("${path.module}/../grafana/prometheus.yml")
+          checksum_config = filesha256("${path.module}/../configs/prometheus.yml")
         }
       }
 
